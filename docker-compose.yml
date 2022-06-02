@@ -14,7 +14,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  application:
+  imenik_backend:
+    container_name: imenik_backend
     build:
       context: ./
       dockerfile: Dockerfile
