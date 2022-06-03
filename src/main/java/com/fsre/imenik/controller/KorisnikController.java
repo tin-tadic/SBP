@@ -39,6 +39,7 @@ public class KorisnikController {
 
     @PostMapping("/add")
     public ResponseMessage add(@RequestBody @Valid Korisnik korisnikToAdd) {
+        korisnikToAdd.setLozinka(bCryptPasswordEncoder.encode(korisnikToAdd.getLozinka()));
         korisnikRepository.save(korisnikToAdd);
         ResponseMessage responseMessage = new ResponseMessage(HttpStatus.CREATED, 201, "Item successfully created");
 
