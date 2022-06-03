@@ -26,3 +26,5 @@ services:
       - mongodb
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    environment:
+      - SPRING_PROFILES_ACTIVE=deploy

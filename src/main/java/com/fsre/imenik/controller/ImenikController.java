@@ -1,7 +1,7 @@
 package com.fsre.imenik.controller;
 
-import com.fsre.imenik.model.BlokLista;
-import com.fsre.imenik.repository.BlokListaRepository;
+import com.fsre.imenik.model.Imenik;
+import com.fsre.imenik.repository.ImenikRepository;
 import com.fsre.imenik.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,41 +19,41 @@ import java.util.Optional;
 @Component
 @RestController
 @Validated
-@RequestMapping("/blokLista")
-public class BlokListaController {
+@RequestMapping("/imenik")
+public class ImenikController {
     @Autowired
-    private BlokListaRepository blokListaRepository;
+    private ImenikRepository imenikRepository;
 
     @GetMapping("/getAll")
     public ResponseMessage getAll() {
-        List<BlokLista> items = blokListaRepository.findAll();
+        List<Imenik> items = imenikRepository.findAll();
         ResponseMessage responseMessage = new ResponseMessage(HttpStatus.OK, 200, "Successfully fetched all items.", items);
 
         return responseMessage;
     }
 
     @PostMapping("/add")
-    public ResponseMessage add(@RequestBody @Valid BlokLista blokListaToAdd) {
-        blokListaRepository.save(blokListaToAdd);
+    public ResponseMessage add(@RequestBody @Valid Imenik imenikListaToAdd) {
+        imenikRepository.save(imenikListaToAdd);
         ResponseMessage responseMessage = new ResponseMessage(HttpStatus.CREATED, 201, "Item successfully created");
 
         return responseMessage;
     }
 
     @PatchMapping("/edit/{id}")
-    public ResponseMessage updateById(@PathVariable String id, @RequestBody @Valid BlokLista blokLista) {
-        Optional<BlokLista> item = blokListaRepository.findById(id);
+    public ResponseMessage updateById(@PathVariable String id, @RequestBody @Valid Imenik imenik) {
+        Optional<Imenik> item = imenikRepository.findById(id);
         ResponseMessage responseMessage = new ResponseMessage();
 
         if (item.isPresent()) {
-            BlokLista blokListaToEdit = item.get();
-            blokListaToEdit.setIme(blokLista.getIme());
-            blokListaToEdit.setPrezime(blokLista.getPrezime());
-            blokListaToEdit.setBrojTelefona(blokLista.getBrojTelefona());
-            blokListaToEdit.setIdImenika(blokLista.getIdImenika());
-            blokListaToEdit.setIdKorisnika(blokLista.getIdKorisnika());
+            Imenik imenikToEdit = item.get();
+            imenikToEdit.setIme(imenik.getIme());
+            imenikToEdit.setPrezime(imenik.getPrezime());
+            imenikToEdit.setBrojTelefona(imenik.getBrojTelefona());
+            imenikToEdit.setIdImenika(imenik.getIdImenika());
+            imenikToEdit.setIdKorisnika(imenik.getIdKorisnika());
 
-            blokListaRepository.save(blokListaToEdit);
+            imenikRepository.save(imenikToEdit);
 
             responseMessage.setHttpStatus(HttpStatus.OK);
             responseMessage.setCode(200);
@@ -71,7 +71,7 @@ public class BlokListaController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseMessage deleteById(@PathVariable String id) {
-        blokListaRepository.deleteById(id);
+        imenikRepository.deleteById(id);
 
         ResponseMessage responseMessage = new ResponseMessage(HttpStatus.OK, 200, String.format("Item with the id %s has been deleted.", id));
         return responseMessage;
