@@ -30,19 +30,19 @@ public class Imenik {
     @NotEmpty
     private String brojTelefona;
 
-    @Field(name = "id_imenika")
+    @Field(name = "id_broja_drzave")
     @NotEmpty
-    private String idImenika;
+    private String idBrojaDrzave;
 
     @Field(name = "id_korisnika")
     @NotEmpty
     private String idKorisnika;
 
-    public Imenik(String ime, String prezime, String brojTelefona, String idImenika, String idKorisnika) {
+    public Imenik(String ime, String prezime, String brojTelefona, String idBrojaDrzave, String idKorisnika) {
         this.ime = ime;
         this.prezime = prezime;
         this.brojTelefona = brojTelefona;
-        this.idImenika = idImenika;
+        this.idBrojaDrzave = idBrojaDrzave;
         this.idKorisnika = idKorisnika;
     }
 }

@@ -2,6 +2,8 @@ package com.fsre.imenik.controller;
 
 import com.fsre.imenik.model.BlokLista;
 import com.fsre.imenik.repository.BlokListaRepository;
+import com.fsre.imenik.repository.ImenikRepository;
+import com.fsre.imenik.repository.KorisnikRepository;
 import com.fsre.imenik.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,12 @@ public class BlokListaController {
     @Autowired
     private BlokListaRepository blokListaRepository;
 
+    @Autowired
+    private ImenikRepository imenikRepository;
+
+    @Autowired
+    private KorisnikRepository korisnikRepository;
+    
     @GetMapping("/getAll")
     public ResponseMessage getAll() {
         List<BlokLista> items = blokListaRepository.findAll();
@@ -34,6 +42,14 @@ public class BlokListaController {
 
     @PostMapping("/add")
     public ResponseMessage add(@RequestBody @Valid BlokLista blokListaToAdd) {
+        if (imenikRepository.findById(blokListaToAdd.getIdImenika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idImenika not found");
+        }
+
+        if (korisnikRepository.findById(blokListaToAdd.getIdKorisnika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idKorisnika not found");
+        }
+
         blokListaRepository.save(blokListaToAdd);
         ResponseMessage responseMessage = new ResponseMessage(HttpStatus.CREATED, 201, "Item successfully created");
 
@@ -44,6 +60,14 @@ public class BlokListaController {
     public ResponseMessage updateById(@PathVariable String id, @RequestBody @Valid BlokLista blokLista) {
         Optional<BlokLista> item = blokListaRepository.findById(id);
         ResponseMessage responseMessage = new ResponseMessage();
+
+        if (imenikRepository.findById(blokLista.getIdImenika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idImenika not found");
+        }
+
+        if (korisnikRepository.findById(blokLista.getIdKorisnika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idKorisnika not found");
+        }
 
         if (item.isPresent()) {
             BlokLista blokListaToEdit = item.get();

@@ -2,6 +2,8 @@ package com.fsre.imenik.controller;
 
 import com.fsre.imenik.model.Favoriti;
 import com.fsre.imenik.repository.FavoritiRepository;
+import com.fsre.imenik.repository.ImenikRepository;
+import com.fsre.imenik.repository.KorisnikRepository;
 import com.fsre.imenik.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,12 @@ public class FavoritiController {
     @Autowired
     private FavoritiRepository favoritiRepository;
 
+    @Autowired
+    private ImenikRepository imenikRepository;
+
+    @Autowired
+    private KorisnikRepository korisnikRepository;
+
     @GetMapping("/getAll")
     public ResponseMessage getAll() {
         List<Favoriti> items = favoritiRepository.findAll();
@@ -34,6 +42,14 @@ public class FavoritiController {
 
     @PostMapping("/add")
     public ResponseMessage add(@RequestBody @Valid Favoriti favoritiToAdd) {
+        if (imenikRepository.findById(favoritiToAdd.getIdImenika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idImenika not found");
+        }
+
+        if (korisnikRepository.findById(favoritiToAdd.getIdKorisnika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idKorisnika not found");
+        }
+
         favoritiRepository.save(favoritiToAdd);
         ResponseMessage responseMessage = new ResponseMessage(HttpStatus.CREATED, 201, "Item successfully created");
 
@@ -44,6 +60,14 @@ public class FavoritiController {
     public ResponseMessage updateById(@PathVariable String id, @RequestBody @Valid Favoriti favoriti) {
         Optional<Favoriti> item = favoritiRepository.findById(id);
         ResponseMessage responseMessage = new ResponseMessage();
+
+        if (imenikRepository.findById(favoriti.getIdImenika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idImenika not found");
+        }
+
+        if (korisnikRepository.findById(favoriti.getIdKorisnika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idKorisnika not found");
+        }
 
         if (item.isPresent()) {
             Favoriti favoritiToEdit = item.get();

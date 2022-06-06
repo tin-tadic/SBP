@@ -46,11 +46,6 @@ public class KorisnikController {
         return responseMessage;
     }
 
-    @GetMapping("/pw")
-    public ResponseMessage doStuff() {
-        return new ResponseMessage(HttpStatus.OK, 200, bCryptPasswordEncoder.encode("123"));
-    }
-
     @PatchMapping("/edit/{id}")
     public ResponseMessage updateById(@PathVariable String id, @RequestBody @Valid Korisnik blokLista) {
         Optional<Korisnik> item = korisnikRepository.findById(id);

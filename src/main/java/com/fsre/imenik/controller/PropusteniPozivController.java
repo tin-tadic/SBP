@@ -1,18 +1,17 @@
 package com.fsre.imenik.controller;
 
 import com.fsre.imenik.model.PropusteniPoziv;
+import com.fsre.imenik.repository.ImenikRepository;
 import com.fsre.imenik.repository.PropusteniPozivRepository;
 import com.fsre.imenik.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,8 @@ public class PropusteniPozivController {
     @Autowired
     private PropusteniPozivRepository propusteniPozivRepository;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(16, new SecureRandom());
+    @Autowired
+    private ImenikRepository imenikRepository;
 
 
     @GetMapping("/getAll")
@@ -39,21 +39,24 @@ public class PropusteniPozivController {
 
     @PostMapping("/add")
     public ResponseMessage add(@RequestBody @Valid PropusteniPoziv propusteniPozivToAdd) {
+        if (imenikRepository.findById(propusteniPozivToAdd.getIdImenika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idImenika not found");
+        }
+        
         propusteniPozivRepository.save(propusteniPozivToAdd);
         ResponseMessage responseMessage = new ResponseMessage(HttpStatus.CREATED, 201, "Item successfully created");
 
         return responseMessage;
     }
 
-    @GetMapping("/pw")
-    public ResponseMessage doStuff() {
-        return new ResponseMessage(HttpStatus.OK, 200, bCryptPasswordEncoder.encode("123"));
-    }
-
     @PatchMapping("/edit/{id}")
     public ResponseMessage updateById(@PathVariable String id, @RequestBody @Valid PropusteniPoziv propusteniPoziv) {
         Optional<PropusteniPoziv> item = propusteniPozivRepository.findById(id);
         ResponseMessage responseMessage = new ResponseMessage();
+
+        if (imenikRepository.findById(propusteniPoziv.getIdImenika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idImenika not found");
+        }
 
         if (item.isPresent()) {
             PropusteniPoziv propusteniPozivToEdit = item.get();

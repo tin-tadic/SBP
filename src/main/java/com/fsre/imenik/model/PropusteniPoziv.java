@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Document("propusteni_pozivi")
 @Getter
@@ -21,7 +22,7 @@ public class PropusteniPoziv {
     private String id;
 
     @Field(name = "datum_vrijeme")
-    @NotEmpty
+    @NotNull
     private Date datumVrijeme;
 
     @Field(name = "id_imenika")

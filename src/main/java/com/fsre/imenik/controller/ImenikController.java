@@ -1,7 +1,9 @@
 package com.fsre.imenik.controller;
 
 import com.fsre.imenik.model.Imenik;
+import com.fsre.imenik.repository.BrojDrzaveRepository;
 import com.fsre.imenik.repository.ImenikRepository;
+import com.fsre.imenik.repository.KorisnikRepository;
 import com.fsre.imenik.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,12 @@ public class ImenikController {
     @Autowired
     private ImenikRepository imenikRepository;
 
+    @Autowired
+    private BrojDrzaveRepository brojDrzaveRepository;
+
+    @Autowired
+    private KorisnikRepository korisnikRepository;
+
     @GetMapping("/getAll")
     public ResponseMessage getAll() {
         List<Imenik> items = imenikRepository.findAll();
@@ -34,6 +42,14 @@ public class ImenikController {
 
     @PostMapping("/add")
     public ResponseMessage add(@RequestBody @Valid Imenik imenikListaToAdd) {
+        if (brojDrzaveRepository.findById(imenikListaToAdd.getIdBrojaDrzave()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idBrojaDrzave not found");
+        }
+
+        if (korisnikRepository.findById(imenikListaToAdd.getIdKorisnika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idKorisnika not found");
+        }
+
         imenikRepository.save(imenikListaToAdd);
         ResponseMessage responseMessage = new ResponseMessage(HttpStatus.CREATED, 201, "Item successfully created");
 
@@ -45,12 +61,20 @@ public class ImenikController {
         Optional<Imenik> item = imenikRepository.findById(id);
         ResponseMessage responseMessage = new ResponseMessage();
 
+        if (brojDrzaveRepository.findById(imenik.getIdBrojaDrzave()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idBrojaDrzave not found");
+        }
+
+        if (korisnikRepository.findById(imenik.getIdKorisnika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idKorisnika not found");
+        }
+
         if (item.isPresent()) {
             Imenik imenikToEdit = item.get();
             imenikToEdit.setIme(imenik.getIme());
             imenikToEdit.setPrezime(imenik.getPrezime());
             imenikToEdit.setBrojTelefona(imenik.getBrojTelefona());
-            imenikToEdit.setIdImenika(imenik.getIdImenika());
+            imenikToEdit.setIdBrojaDrzave(imenik.getIdBrojaDrzave());
             imenikToEdit.setIdKorisnika(imenik.getIdKorisnika());
 
             imenikRepository.save(imenikToEdit);

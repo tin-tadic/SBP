@@ -1,6 +1,7 @@
 package com.fsre.imenik.controller;
 
 import com.fsre.imenik.model.Poziv;
+import com.fsre.imenik.repository.ImenikRepository;
 import com.fsre.imenik.repository.PozivRepository;
 import com.fsre.imenik.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class PozivController {
     @Autowired
     private PozivRepository pozivRepository;
 
+    @Autowired
+    private ImenikRepository imenikRepository;
+
     @GetMapping("/getAll")
     public ResponseMessage getAll() {
         List<Poziv> items = pozivRepository.findAll();
@@ -34,6 +38,10 @@ public class PozivController {
 
     @PostMapping("/add")
     public ResponseMessage add(@RequestBody @Valid Poziv PozivToAdd) {
+        if (imenikRepository.findById(PozivToAdd.getIdImenika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idImenika not found");
+        }
+
         pozivRepository.save(PozivToAdd);
         ResponseMessage responseMessage = new ResponseMessage(HttpStatus.CREATED, 201, "Item successfully created");
 
@@ -44,6 +52,10 @@ public class PozivController {
     public ResponseMessage updateById(@PathVariable String id, @RequestBody @Valid Poziv poziv) {
         Optional<Poziv> item = pozivRepository.findById(id);
         ResponseMessage responseMessage = new ResponseMessage();
+
+        if (imenikRepository.findById(poziv.getIdImenika()).isEmpty()) {
+            return new ResponseMessage(HttpStatus.UNPROCESSABLE_ENTITY, 422, "idImenika not found");
+        }
 
         if (item.isPresent()) {
             Poziv pozivToEdit = item.get();
