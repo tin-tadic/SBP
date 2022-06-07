@@ -41,7 +41,7 @@ public class ImenikController {
         return responseMessage;
     }
 
-    @GetMapping
+    @GetMapping("/get/{id}")
     public ResponseMessage getById(@PathVariable String id) {
         Optional<Imenik> item = imenikRepository.findById(id);
         ArrayList<Imenik> returnList = new ArrayList<>();

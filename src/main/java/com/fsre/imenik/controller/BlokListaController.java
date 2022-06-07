@@ -41,7 +41,7 @@ public class BlokListaController {
         return responseMessage;
     }
 
-    @GetMapping
+    @GetMapping("/get/{id}")
     public ResponseMessage getById(@PathVariable String id) {
         Optional<BlokLista> item = blokListaRepository.findById(id);
         ArrayList<BlokLista> returnList = new ArrayList<>();

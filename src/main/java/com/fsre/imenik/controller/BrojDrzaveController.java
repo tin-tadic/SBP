@@ -33,7 +33,7 @@ public class BrojDrzaveController {
         return responseMessage;
     }
 
-    @GetMapping
+    @GetMapping("/get/{id}")
     public ResponseMessage getById(@PathVariable String id) {
         Optional<BrojDrzave> item = brojDrzaveRepository.findById(id);
         ArrayList<BrojDrzave> returnList = new ArrayList<>();

@@ -41,7 +41,7 @@ public class FavoritiController {
         return responseMessage;
     }
 
-    @GetMapping
+    @GetMapping("/get/{id}")
     public ResponseMessage getById(@PathVariable String id) {
         Optional<Favoriti> item = favoritiRepository.findById(id);
         ArrayList<Favoriti> returnList = new ArrayList<>();

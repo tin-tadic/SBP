@@ -38,7 +38,7 @@ public class KorisnikController {
         return responseMessage;
     }
 
-    @GetMapping
+    @GetMapping("/get/{id}")
     public ResponseMessage getById(@PathVariable String id) {
         Optional<Korisnik> item = korisnikRepository.findById(id);
         ArrayList<Korisnik> returnList = new ArrayList<>();

@@ -37,7 +37,7 @@ public class PozivController {
         return responseMessage;
     }
 
-    @GetMapping
+    @GetMapping("/get/{id}")
     public ResponseMessage getById(@PathVariable String id) {
         Optional<Poziv> item = pozivRepository.findById(id);
         ArrayList<Poziv> returnList = new ArrayList<>();

@@ -38,7 +38,7 @@ public class PropusteniPozivController {
         return responseMessage;
     }
 
-    @GetMapping
+    @GetMapping("/get/{id}")
     public ResponseMessage getById(@PathVariable String id) {
         Optional<PropusteniPoziv> item = propusteniPozivRepository.findById(id);
         ArrayList<PropusteniPoziv> returnList = new ArrayList<>();
